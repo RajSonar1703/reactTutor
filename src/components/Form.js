@@ -1,29 +1,21 @@
-
-
 import React, { useState, useEffect } from 'react';
 import CaptchaForm from './Captcha';
 
 const styles = {
-  main: {
-    backgroundColor: 'antiquewhite',
-    padding: '30px',
-    fontFamily: `'Segoe UI', 'Poppins', sans-serif`,
-  },
   rowLayout: {
     display: 'flex',
     maxWidth: '900px',
-    margin: 'auto',
+    width: '100%',
+    margin: '0 auto',
     backgroundColor: '#fff',
     borderRadius: '10px',
     overflow: 'hidden',
     boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        marginRight:'250px'
-
+    padding: '25px',
+    boxSizing: 'border-box'
   },
-
   formContainer: {
     flex: 1,
-    padding: '25px',
   },
   grid: {
     display: 'grid',
@@ -71,8 +63,6 @@ const styles = {
   }
 };
 
-
-
 export default function Form() {
   const [captcha, setCaptcha] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
@@ -101,88 +91,63 @@ export default function Form() {
     }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (captchaInput !== captcha) {
-    alert('❌ Incorrect captcha. Please try again.');
+    if (captchaInput !== captcha) {
+      alert('❌ Incorrect captcha. Please try again.');
+      setCaptchaInput('');
+      generateCaptcha();
+      return;
+    }
+
+    const payload = {
+      service_id: 'service_877qqaa',
+      template_id: 'template_wtvo9sm',
+      user_id: 'tFCnS8BswKbRpDKH9',
+      template_params: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        contact: formData.contact,
+        whatsapp: formData.whatsapp,
+        email: formData.email,
+        query: formData.query
+      }
+    };
+
+    try {
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert('✅ Email sent successfully!');
+      } else {
+        alert('❌ Email sending failed.');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert('❌ Something went wrong.');
+    }
+
+    setFormData({
+      firstName: '',
+      lastName: '',
+      contact: '',
+      whatsapp: '',
+      email: '',
+      query: ''
+    });
     setCaptchaInput('');
     generateCaptcha();
-    return;
-  }
-
-  const payload = {
-    service_id: 'service_877qqaa',      // Replace this
-    template_id: 'template_wtvo9sm',    // Replace this
-    user_id: 'tFCnS8BswKbRpDKH9',         // Replace this
-    template_params: {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      contact: formData.contact,
-      whatsapp: formData.whatsapp,
-      email: formData.email,
-      query: formData.query
-    }
   };
 
-  try {
-    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (res.ok) {
-      alert('✅ Email sent successfully!');
-    } else {
-      alert('❌ Email sending failed.');
-    }
-  } catch (err) {
-    console.error('Error:', err);
-    alert('❌ Something went wrong.');
-  }
-
-  setFormData({
-    firstName: '',
-    lastName: '',
-    contact: '',
-    whatsapp: '',
-    email: '',
-    query: ''
-  });
-  setCaptchaInput('');
-  generateCaptcha();
-};
-
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   if (captchaInput !== captcha) {
-  //     alert('❌ Incorrect captcha. Please try again.');
-  //     setCaptchaInput('');
-  //     generateCaptcha();
-  //     return;
-  //   }
-
-  //   alert('✅ Captcha verified and form submitted!');
-  //   console.log('Form Data:', formData);
-  //   setFormData({
-  //     firstName: '',
-  //     lastName: '',
-  //     contact: '',
-  //     whatsapp: '',
-  //     email: '',
-  //     query: ''
-  //   });
-  //   setCaptchaInput('');
-  //   generateCaptcha();
-  // };
-
   return (
-    <div style={styles.main}>
+    <div className="form-wrapper">
       <div style={styles.rowLayout}>
         <form onSubmit={handleSubmit} style={styles.formContainer}>
           <div style={styles.grid}>
@@ -208,7 +173,6 @@ const handleSubmit = async (e) => {
                 required
               />
             </div>
-
             <div>
               <label style={styles.label}>Contact Number</label>
               <input
@@ -231,7 +195,6 @@ const handleSubmit = async (e) => {
                 required
               />
             </div>
-
             <div style={styles.full}>
               <label style={styles.label}>Email ID</label>
               <input
@@ -243,7 +206,6 @@ const handleSubmit = async (e) => {
                 required
               />
             </div>
-
             <div style={styles.full}>
               <label style={styles.label}>Query</label>
               <textarea
@@ -254,7 +216,6 @@ const handleSubmit = async (e) => {
                 required
               />
             </div>
-
             <div style={styles.full}>
               <label style={styles.label}>Captcha</label>
               <CaptchaForm
@@ -264,13 +225,37 @@ const handleSubmit = async (e) => {
               />
             </div>
           </div>
-
           <button type="submit" style={styles.submitBtn}>
             Submit
           </button>
         </form>
-  </div>
-</div>
+      </div>
 
+      <style>
+        {`
+          .form-wrapper {
+            flex: 1 1 500px;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+          }
+
+          @media (min-width: 993px) {
+            .form-wrapper {
+              margin-left: 40px;
+            }
+          }
+
+          @media (max-width: 992px) {
+            .form-wrapper {
+              margin-left: 0;
+              width: 100%;
+              padding: 10px;
+            }
+          }
+        `}
+      </style>
+    </div>
   );
 }
