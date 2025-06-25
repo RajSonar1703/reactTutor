@@ -6,7 +6,7 @@ export default function CaptchaForm({ captcha, input, setInput }) {
     <div style={{
       display: 'flex',
       alignItems: 'center',
-      gap: '10px',
+      gap: '5px',
       marginBottom: '10px'
     }}>
       <input
@@ -15,7 +15,7 @@ export default function CaptchaForm({ captcha, input, setInput }) {
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter captcha"
         style={{
-          padding: '10px',
+          padding: '5px',
           flex: 1,
           boxSizing: 'border-box',
           borderRadius:'7px',
